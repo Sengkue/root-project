@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 140px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .category-list {
+            list-style: none;
+        }
+
+        .category-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .category-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .category-link:hover,
+        .category-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .category-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-category {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .project-date {
+            color: #888;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .project-description {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .external-link::after {
+            content: "🔗";
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            opacity: 0.6;
+        }
+
+        .external-link {
+            position: relative;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .empty-state h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+                padding: 1.5rem;
+            }
+
+            .category-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .category-item {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Category specific colors */
+        .cat-web-development {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+
+        .cat-mobile-app {
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+        }
+
+        .cat-design {
+            background: linear-gradient(135deg, #ec4899, #f43f5e);
+        }
+
+        .cat-data-science {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .cat-ai-ml {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .cat-backend {
+            background: linear-gradient(135deg, #6b7280, #374151);
+        }
+
+        .cat-blockchain {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">ProjectHub</a>
+            <ul class="nav-links">
+                <li><a href="#" class="active" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+                <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Categories</h3>
+            <ul class="category-list">
+                <li class="category-item">
+                    <a href="#" class="category-link active" onclick="filterProjects('all', this)">
+                        <span class="category-icon">🌟</span>
+                        All Projects
+                    </a>
+                </li>
+                <li class="category-item">
+                    <a href="#" class="category-link" onclick="filterProjects('web-development', this)">
+                        <span class="category-icon">💻</span>
+                        Web Development
+                    </a>
+                </li>
+                <li class="category-item">
+                    <a href="#" class="category-link" onclick="filterProjects('mobile-app', this)">
+                        <span class="category-icon">📱</span>
+                        Mobile Apps
+                    </a>
+                </li>
+                <li class="category-item">
+                    <a href="#" class="category-link" onclick="filterProjects('design', this)">
+                        <span class="category-icon">🎨</span>
+                        Design
+                    </a>
+                </li>
+                <li class="category-item">
+                    <a href="#" class="category-link" onclick="filterProjects('data-science', this)">
+                        <span class="category-icon">📊</span>
+                        Data Science
+                    </a>
+                </li>
+                <li class="category-item">
+                    <a href="#" class="category-link" onclick="filterProjects('ai-ml', this)">
+                        <span class="category-icon">🤖</span>
+                        AI/ML
+                    </a>
+                </li>
+                <li class="category-item">
+                    <a href="#" class="category-link" onclick="filterProjects('backend', this)">
+                        <span class="category-icon">⚙️</span>
+                        Backend
+                    </a>
+                </li>
+                <li class="category-item">
+                    <a href="#" class="category-link" onclick="filterProjects('blockchain', this)">
+                        <span class="category-icon">⛓️</span>
+                        Blockchain
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Page -->
+            <div id="homePage" class="page-content">
+                <div class="page-header">
+                    <h1 class="page-title">My Projects</h1>
+                    <p class="page-subtitle">Explore my portfolio of creative and technical projects</p>
+                </div>
+                
+                <div class="projects-grid" id="projectsGrid">
+                    <!-- Projects will be generated here -->
+                </div>
+            </div>
+
+            <!-- About Page -->
+            <div id="aboutPage" class="page-content" style="display: none;">
+                <div class="empty-state">
+                    <h2>About</h2>
+                    <p>This page is under construction. Coming soon!</p>
+                </div>
+            </div>
+
+            <!-- Contact Page -->
+            <div id="contactPage" class="page-content" style="display: none;">
+                <div class="empty-state">
+                    <h2>Contact</h2>
+                    <p>This page is under construction. Coming soon!</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <p>&copy; 2025 ProjectHub. All rights reserved.</p>
+            </div>
+            <ul class="footer-links">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Support</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        // Project data
+        const projectData = [
+            {
+                title: "E-Commerce Platform",
+                description: "A full-stack e-commerce solution with React frontend, Node.js backend, and integrated payment processing. Features include user authentication, product catalog, shopping cart, and admin dashboard.",
+                category: "Web Development",
+                date: "Dec 2024",
+                link: "/project/e-commerce-platform",
+                isExternal: false
+            },
+            {
+                title: "Fitness Tracking App",
+                description: "React Native mobile application for tracking workouts, nutrition, and health metrics. Includes social features, progress analytics, and integration with wearable devices.",
+                category: "Mobile App",
+                date: "Jan 2025",
+                link: "https://github.com/yourusername/mobile-fitness-app",
+                isExternal: true
+            },
+            {
+                title: "Brand Identity System",
+                description: "Complete brand identity design for a tech startup including logo, color palette, typography, business cards, and brand guidelines documentation.",
+                category: "Design",
+                date: "Nov 2024",
+                link: "/project/brand-identity-system",
+                isExternal: false
+            },
+            {
+                title: "Sales Prediction Model",
+                description: "Machine learning model using Python and scikit-learn to predict sales performance. Includes data preprocessing, feature engineering, and model evaluation with 95% accuracy.",
+                category: "Data Science",
+                date: "Oct 2024",
+                link: "https://www.kaggle.com/yourusername/sales-prediction-model",
+                isExternal: true
+            },
+            {
+                title: "AI Chatbot Assistant",
+                description: "Intelligent chatbot powered by natural language processing and machine learning. Capable of handling customer inquiries, providing recommendations, and learning from interactions.",
+                category: "AI/ML",
+                date: "Jan 2025",
+                link: "/project/chatbot-ai-assistant",
+                isExternal: false
+            },
+            {
+                title: "RESTful API Service",
+                description: "Scalable REST API built with Node.js and Express, featuring authentication, rate limiting, database integration, and comprehensive documentation. Deployed on AWS with CI/CD pipeline.",
+                category: "Backend",
+                date: "Dec 2024",
+                link: "https://api.yourproject.com/docs",
+                isExternal: true
+            },
+            {
+                title: "Blockchain Voting System",
+                description: "Decentralized voting application using Ethereum smart contracts and Web3.js. Ensures transparency, security, and immutability in the voting process.",
+                category: "Blockchain",
+                date: "Sep 2024",
+                link: "https://blockchain-voting-demo.herokuapp.com",
+                isExternal: true
+            }
+        ];
+
+        // Create project cards
+        function createProjectCards() {
+            const grid = document.getElementById('projectsGrid');
+            grid.innerHTML = '';
+
+            projectData.forEach(project => {
+                const categorySlug = project.category.toLowerCase().replace(/[^a-z0-9]/g, '-');
+                
+                const card = document.createElement('a');
+                card.href = project.link;
+                card.className = `project-card ${project.isExternal ? 'external-link' : ''}`;
+                card.setAttribute('data-category', categorySlug);
+                
+                if (project.isExternal) {
+                    card.target = '_blank';
+                }
+
+                card.innerHTML = `
+                    <div class="project-header">
+                        <span class="project-category cat-${categorySlug}">${project.category}</span>
+                        <span class="project-date">${project.date}</span>
+                    </div>
+                    <h3 class="project-title">${project.title}</h3>
+                    <p class="project-description">${project.description}</p>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter projects
+        function filterProjects(category, element) {
+            const cards = document.querySelectorAll('.project-card');
+            const links = document.querySelectorAll('.category-link');
+
+            // Update active category
+            links.forEach(link => link.classList.remove('active'));
+            element.classList.add('active');
+
+            // Filter cards
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Show different pages
+        function showPage(pageName) {
+            const pages = document.querySelectorAll('.page-content');
+            const navLinks = document.querySelectorAll('.nav-links a');
+
+            // Hide all pages
+            pages.forEach(page => page.style.display = 'none');
+
+            // Show selected page
+            document.getElementById(pageName + 'Page').style.display = 'block';
+
+            // Update active nav link
+            navLinks.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createProjectCards();
+        });
+    </script>
+</body>
+</html>

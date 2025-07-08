@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Neumorphic Register</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: #e0e5ec;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #e0e5ec;
+      padding: 2rem;
+      border-radius: 25px;
+      box-shadow: 10px 10px 30px #bec3c9, -10px -10px 30px #ffffff;
+      width: 300px;
+    }
+    .tabs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 0.5rem;
+      margin: 0 5px;
+      border: none;
+      border-radius: 15px;
+      background: #e0e5ec;
+      box-shadow: inset 5px 5px 10px #bec3c9,
+                  inset -5px -5px 10px #ffffff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .tabs .active {
+      background: linear-gradient(145deg, #d1d9e6, #ffffff);
+      box-shadow: inset 2px 2px 5px #bec3c9,
+                  inset -2px -2px 5px #ffffff;
+    }
+    .input-group {
+      margin-bottom: 1rem;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 10px;
+      border: none;
+      background: #e0e5ec;
+      box-shadow: inset 3px 3px 6px #bec3c9,
+                  inset -3px -3px 6px #ffffff;
+      font-size: 14px;
+    }
+    .register-btn {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      margin-top: 0.5rem;
+      border-radius: 15px;
+      background: #e0e5ec;
+      box-shadow: 5px 5px 10px #bec3c9,
+                  -5px -5px 10px #ffffff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .register-btn i {
+      margin-right: 5px;
+    }
+    .social {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      background: #e0e5ec;
+      border-radius: 50%;
+      box-shadow: 5px 5px 10px #bec3c9,
+                  -5px -5px 10px #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .or {
+      text-align: center;
+      margin-top: 1.2rem;
+      font-size: 14px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="tabs">
+      <button id="loginBtn">Login</button>
+      <button class="active" id="registerBtn">Register</button>
+    </div>
+    <div class="input-group">
+      <label>Full Name</label>
+      <input type="text" placeholder="John Doe" id="name" />
+    </div>
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" placeholder="you@example.com" id="email" />
+    </div>
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" />
+    </div>
+    <div class="input-group">
+      <label>Confirm Password</label>
+      <input type="password" id="confirmPassword" />
+    </div>
+    <button class="register-btn" onclick="registerUser()">
+      <i>👤➕</i> Register
+    </button>
+    <div class="or">Or sign up with</div>
+    <div class="social">
+      <div class="social-icon">G</div>
+      <div class="social-icon">f</div>
+      <div class="social-icon">🐦</div>
+    </div>
+  </div>
+  <script>
+    function registerUser() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      if (!name || !email || !password || !confirmPassword) {
+        alert("Please fill out all fields.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+      alert(`Welcome ${name}! Registration successful.`);
+      // You can replace this with actual backend code or Firebase integration.
+    }
+  </script>
+</body>
+</html>

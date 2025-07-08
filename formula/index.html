@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Table Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 150px;
+            text-align: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .formula-line {
+            margin: 8px 0;
+            padding: 5px;
+            background-color: white;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .number-buttons {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .number-btn {
+            padding: 8px 12px;
+            margin: 3px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .all-btn {
+            background-color: #FF9800 !important;
+            font-weight: bold;
+        }
+        
+        .all-btn:hover {
+            background-color: #F57C00 !important;
+        }
+        
+        .table-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .download-section {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .download-btn {
+            padding: 8px 15px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        
+        .download-btn.excel {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .download-btn.excel:hover {
+            background-color: #218838;
+        }
+        
+        .download-btn.pdf {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .download-btn.pdf:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Multiplication Table Generator</h1>
+        
+        <div class="input-section">
+            <label for="numberInput">Enter multiplication table number:</label>
+            <input type="text" id="numberInput" value="2" placeholder="Enter number or 'all'">
+            
+            <div style="margin: 15px 0;">
+                <label for="startInput">Start from:</label>
+                <input type="number" id="startInput" value="1" min="1" style="width: 80px; margin-right: 15px;">
+                
+                <label for="endInput">End at:</label>
+                <input type="number" id="endInput" value="12" min="1" style="width: 80px;">
+            </div>
+            
+            <button onclick="generateTable()">Generate Table</button>
+        </div>
+        
+        <div class="download-section">
+            <button class="download-btn excel" onclick="downloadExcel()">📊 Excel</button>
+            <button class="download-btn pdf" onclick="downloadPDF()">📄 PDF</button>
+        </div>
+        
+        <div class="number-buttons">
+            <p>Quick select:</p>
+            <button class="number-btn all-btn" onclick="selectAll()">All</button>
+            <button class="number-btn" onclick="selectNumber(2)">2</button>
+            <button class="number-btn" onclick="selectNumber(3)">3</button>
+            <button class="number-btn" onclick="selectNumber(4)">4</button>
+            <button class="number-btn" onclick="selectNumber(5)">5</button>
+            <button class="number-btn" onclick="selectNumber(6)">6</button>
+            <button class="number-btn" onclick="selectNumber(7)">7</button>
+            <button class="number-btn" onclick="selectNumber(8)">8</button>
+            <button class="number-btn" onclick="selectNumber(9)">9</button>
+            <button class="number-btn" onclick="selectNumber(10)">10</button>
+            <button class="number-btn" onclick="selectNumber(11)">11</button>
+            <button class="number-btn" onclick="selectNumber(12)">12</button>
+        </div>
+        
+        <div class="result" id="result">
+            <h3>Multiplication Table for 2:</h3>
+            <div class="formula-line">2 × 1 = 2</div>
+            <div class="formula-line">2 × 2 = 4</div>
+            <div class="formula-line">2 × 3 = 6</div>
+            <div class="formula-line">2 × 4 = 8</div>
+            <div class="formula-line">2 × 5 = 10</div>
+            <div class="formula-line">2 × 6 = 12</div>
+            <div class="formula-line">2 × 7 = 14</div>
+            <div class="formula-line">2 × 8 = 16</div>
+            <div class="formula-line">2 × 9 = 18</div>
+            <div class="formula-line">2 × 10 = 20</div>
+            <div class="formula-line">2 × 11 = 22</div>
+            <div class="formula-line">2 × 12 = 24</div>
+        </div>
+    </div>
+
+    <script>
+        // Global variable to store current data for downloads
+        let currentTableData = [];
+        
+        function generateTable() {
+            const input = document.getElementById('numberInput').value.toLowerCase().trim();
+            const startNum = parseInt(document.getElementById('startInput').value) || 1;
+            const endNum = parseInt(document.getElementById('endInput').value) || 12;
+            
+            // Validate range
+            if (startNum > endNum) {
+                alert('Start number must be less than or equal to end number');
+                return;
+            }
+            
+            // Check if user typed "all"
+            if (input === 'all') {
+                generateAllTables();
+                return;
+            }
+            
+            // Convert to number and validate
+            const number = parseInt(input);
+            
+            if (isNaN(number) || number < 2) {
+                alert('Please enter a number 2 or above, or type "all"');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('result');
+            let html = `<h3>Multiplication Table for ${number} (${startNum} to ${endNum}):</h3>`;
+            
+            // Store data for downloads
+            currentTableData = [{
+                title: `Multiplication Table for ${number}`,
+                range: `${startNum} to ${endNum}`,
+                data: []
+            }];
+            
+            for (let i = startNum; i <= endNum; i++) {
+                const result = number * i;
+                html += `<div class="formula-line">${number} × ${i} = ${result}</div>`;
+                currentTableData[0].data.push({
+                    number: number,
+                    multiplier: i,
+                    result: result,
+                    formula: `${number} × ${i} = ${result}`
+                });
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+        
+        function generateAllTables() {
+            const startNum = parseInt(document.getElementById('startInput').value) || 1;
+            const endNum = parseInt(document.getElementById('endInput').value) || 12;
+            
+            // Validate range
+            if (startNum > endNum) {
+                alert('Start number must be less than or equal to end number');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('result');
+            let html = `<h3>All Multiplication Tables (2-12) from ${startNum} to ${endNum}:</h3>`;
+            
+            // Store data for downloads
+            currentTableData = [];
+            
+            for (let num = 2; num <= 12; num++) {
+                html += `<div class="table-section">`;
+                html += `<div class="table-title">Table for ${num} (${startNum} to ${endNum}):</div>`;
+                
+                const tableData = {
+                    title: `Multiplication Table for ${num}`,
+                    range: `${startNum} to ${endNum}`,
+                    data: []
+                };
+                
+                for (let i = startNum; i <= endNum; i++) {
+                    const result = num * i;
+                    html += `<div class="formula-line">${num} × ${i} = ${result}</div>`;
+                    tableData.data.push({
+                        number: num,
+                        multiplier: i,
+                        result: result,
+                        formula: `${num} × ${i} = ${result}`
+                    });
+                }
+                
+                currentTableData.push(tableData);
+                html += `</div>`;
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+        
+        function downloadExcel() {
+            if (!currentTableData || currentTableData.length === 0) {
+                alert('Please generate a table first before downloading');
+                return;
+            }
+            
+            const wb = XLSX.utils.book_new();
+            
+            currentTableData.forEach((table, index) => {
+                const wsData = [
+                    [table.title],
+                    [`Range: ${table.range}`],
+                    [],
+                    ['Number', 'Multiplier', 'Result', 'Formula']
+                ];
+                
+                table.data.forEach(row => {
+                    wsData.push([row.number, row.multiplier, row.result, row.formula]);
+                });
+                
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                const sheetName = currentTableData.length === 1 ? 'Multiplication Table' : `Table ${table.title.split(' ')[3]}`;
+                XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            });
+            
+            const filename = currentTableData.length === 1 
+                ? `multiplication_table_${currentTableData[0].title.split(' ')[3]}.xlsx`
+                : 'multiplication_tables_all.xlsx';
+                
+            XLSX.writeFile(wb, filename);
+        }
+        
+        function downloadPDF() {
+            if (!currentTableData || currentTableData.length === 0) {
+                alert('Please generate a table first before downloading');
+                return;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            let yPosition = 20;
+            
+            currentTableData.forEach((table, tableIndex) => {
+                if (tableIndex > 0) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                
+                // Title
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text(table.title, 20, yPosition);
+                yPosition += 10;
+                
+                // Range
+                doc.setFontSize(12);
+                doc.setFont(undefined, 'normal');
+                doc.text(`Range: ${table.range}`, 20, yPosition);
+                yPosition += 15;
+                
+                // Table headers
+                doc.setFont(undefined, 'bold');
+                doc.text('Formula', 20, yPosition);
+                doc.text('Result', 120, yPosition);
+                yPosition += 10;
+                
+                // Table data
+                doc.setFont(undefined, 'normal');
+                table.data.forEach(row => {
+                    if (yPosition > 270) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    
+                    doc.text(`${row.number} × ${row.multiplier}`, 20, yPosition);
+                    doc.text(`${row.result}`, 120, yPosition);
+                    yPosition += 8;
+                });
+            });
+            
+            const filename = currentTableData.length === 1 
+                ? `multiplication_table_${currentTableData[0].title.split(' ')[3]}.pdf`
+                : 'multiplication_tables_all.pdf';
+                
+            doc.save(filename);
+        }
+        
+        function selectNumber(num) {
+            document.getElementById('numberInput').value = num;
+            generateTable();
+        }
+        
+        function selectAll() {
+            document.getElementById('numberInput').value = 'all';
+            generateAllTables();
+        }
+        
+        // Allow Enter key to generate table
+        document.getElementById('numberInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateTable();
+            }
+        });
+    </script>
+</body>
+</html>
